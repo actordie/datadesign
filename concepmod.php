@@ -7,10 +7,10 @@
 	</head>
 	<body>
 		<h1>Profile 1-to-M</h1>
-		<br><p>
-			profileId - profileCart - profileSettings - profileFeed
-		</p>
+		<p>profileId - profileCart - profileSettings - profileFeed</p>
 		<h1>Product M-to-N</h1>
-		<br><p> productID - productFavorite - Product Image - productProducer</p>
+		<p> productID - productImage - productProducer</p>
+		<h1>Likes1-to-N</h1>
+			<p>likeId - likeImage - like</p>
 	</body>
 </html>

@@ -5,12 +5,13 @@
 			Persona
 		</title>
 		<p>
-			Michael Jordan - 30 - Gamer
-			<br>
+			Jacko - 30 - Gamer
+		</p>
 			<h1></h1>
-			Michael is having friends over for a LAN party - Will have it in his lavish basement. While it is tiled in marble he wants to go above and beyond for his friends.
-		<br>
-		Chromebox user - Connects a 4K Projected Display - Latest Flagship Google Phone
+			Jacko is a professional gamer -
+		Chromebox user - Connects to a 4K Projected Display - Latest Flagship Google Phone. Using phone to quickly browse Etsy. Jacko is making a last minute purchase would like to get done before end of business day. Has found 2/3 options to throughout the day.
+
+		Must be able to see his favorited products.
 		<br>
 		Pressed for time
 		</p>
