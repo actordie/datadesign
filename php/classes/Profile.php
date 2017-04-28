@@ -297,8 +297,54 @@ public static function getItemByItemPrice(\PDO $pdo, string $itemPrice): \SplFix
 		$statement->setFetchMode(\PDo::FETCH_ASSOC);
 		while(($row = $statement->fetch())!==false) {
 			try {
-					$item = new Item($row)
+					$item = new Item($row)[ "itemId"], $row["itemProfileId"], $row["itemPrice"]);
+					$items[$items->key()] = $item;
+					$$items->next();
+			} catch(\Exception $exception) {
+					//if the row coant be converted, rethrow it
+				throw(new\PDOException($exception->getMessage(), 0, $exception));
 			}
-		}
 	}
+	return ($titems);
 }
+/**
+ * gets all items
+ *
+ * @param \PDO $pdo PDO connection object
+ * @return \SplFixedArray SplFixedAaray of tweets found or null if not found
+ * @throws \PDOException when mySQL related errors occur
+ * @throws \TypeError when variables are not the correct data type
+ **/
+public static function getAllItems(\PDO $pdo) : \SplFixedArray {
+			// create query template
+			$query = "SELECT itemId, itemProfileId, itemPrice";
+			$statement=$pdo->prepare($query);
+			$statement->execute();
+			//build an array of titems
+			$items = new \SplFixedArray($statement->rowCount());
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			while((row = $statement->fetch())) !== false {
+					try {
+						$item = new Item($row[itemId], $row{"itemProfileId"], $row["itemPrice"]);
+						$items[$items->key()] =$item;
+						$items->next();
+						} catch (\Exception $exception) {
+									//if the tow couldn't be converted, rethrow it
+									throw(new \PDOException($exception->getMessage(), 0, $exception));
+						}
+		}
+		return ($items);
+}
+/**
+ * formats the state variables for JSON serialization
+ *
+ * @return array resulting state variables to serialize
+
+public function jsonSerailize(){
+		$fields = get_OBject_vars($this);
+		//format the date sp that the front end can consume it
+			$fields
+}
+ *
+ **/
+	}
