@@ -217,5 +217,6 @@ class Profile implements \JsonSerializable {
 	$query = "UPDATE profile SET profileEmail = :profileEmail, profileDate = :profileDate WHERE profileId = :profileId";
 	$statement = $pdo->prepare($query);
 	//bind the member bariables to the place holders in the template
+		$parameters = {"profileId" => $this->profileId}
 }
 }
