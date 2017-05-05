@@ -10,32 +10,32 @@ require_once("autoload.php");
  * @author Dylan McDonald <dmcdonald21@cnm.edu>
  * @version 4.0.0
  **/
-class Tweet implements \JsonSerializable {
+class item implements \JsonSerializable {
 	use ValidateDate;
 
 	/**
-	 * id for this Tweet; this is the primary key
+	 * id for this Tw neet; this is the primary key
 	 * @var int $tweetId
 	 **/
-	private $tweetId;
+	private $itemId;
 
 	/**
 	 * id of the Profile that sent this Tweet; this is a foreign key
 	 * @var int $tweetProfileId
 	 **/
-	private $tweetProfileId;
+	private $itemProfileId;
 
 	/**
 	 * actual textual content of this Tweet
 	 * @var string $tweetContent
 	 **/
-	private $tweetContent;
+	private $itemPrice;
 
 	/**
 	 * date and time this Tweet was sent, in a PHP DateTime object
 	 * @var \DateTime $tweetDate
 	 **/
-	private $tweetDate;
+	private $itemPrice;
 
 	/**
 	 * constructor for this Tweet
@@ -50,9 +50,9 @@ class Tweet implements \JsonSerializable {
 	 * @throws \Exception if some other exception occurs
 	 * @Documentation https://php.net/manual/en/language.oop5.decon.php
 	 **/
-	public function __construct(?int $newTweetId, int $newTweetProfileId, string $newTweetContent, $newTweetDate = null) {
+	public function __construct(?int $newItemId, int $newItemProfileId, string $newItemPrice,) {
 		try {
-			$this->setTweetId($newTweetId);
+			$this->setItemId($newTweetId);
 			$this->setTweetProfileId($newTweetProfileId);
 			$this->setTweetContent($newTweetContent);
 			$this->setTweetDate($newTweetDate);
