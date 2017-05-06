@@ -2,7 +2,7 @@
 
 namespace Edu\Cnm\Sjackson37;
 
-use Edu\Cnm\DataDesign\ValidateDate;
+use Edu\Cnm\DataDesign\ValidateDate; //todo delete this
 
 require_once("autoload.php");
 
@@ -15,7 +15,7 @@ require_once("autoload.php");
  * @author Sabastian Jackson <sjackson37@cnm.edu>
  * @version 4.0.0
  * **/
-class Profile implements \JsonSerializable {
+class Profile implements \JsonSerializable { //todo you have to implement JsonSerialize at the bottom of the document - see line
 	use ValidateDate;
 
 	/**
@@ -56,8 +56,9 @@ class Profile implements \JsonSerializable {
 	public function __construct(?int $newProfileId, string $newprofileEmail, string $newProfileHash, string $newProfileSalt) {
 		try {
 			$this->setProfileId($newProfileId);
-			$this->setProfileHash($newProfileHash);
-			$this->profileSalt($newProfileSalt);
+			//todo add method for email here too
+			$this->setProfileHash($newProfileHash); //todo you have not created this method yet
+			$this->profileSalt($newProfileSalt); //todo you have not created this method yet
 		} //determine what exception type was thrown
 		catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			$exceptionType = get_class($exception);
@@ -132,7 +133,7 @@ class Profile implements \JsonSerializable {
 	 *
 	 * @return \DateTime value of profile date
 	 */
-	public function getProfileDate(): \DateTime {
+	public function getProfileDate(): \DateTime { //todo date is not a part of this entity, delete this
 		return ($this->profileDate);
 	}
 
@@ -143,7 +144,7 @@ class Profile implements \JsonSerializable {
 	 * @throws \InvalidArgumentException if $newProfileDate is not a valide object or string
 	 * @throws \RangeException if $newPRofileDate is a date that does not exist
 	 */
-	public function setProfileDate($newProfileDate = null): void {
+	public function setProfileDate($newProfileDate = null): void { //todo date is not a part of this entity, delete this
 		//base case: if the date is null use the current date and time
 		if($newProfileDate === null) {
 			$this->profileDate = new \DateTime();
@@ -172,11 +173,11 @@ class Profile implements \JsonSerializable {
 			throw(new \PDOException("not a new profile"));
 		}
 		//create a query template
-		$query = "INSERT INTO profile(profileEmail, profileDate) VALUES(:profileEmail, :profileDate) ";
+		$query = "INSERT INTO profile(profileEmail, profileDate) VALUES(:profileEmail, :profileDate) "; //todo you do not need to insert a date here because date is not a part of the profile entity. you will need to insert your profileId, profileEmail, profileHash, and profileSalt
 		$statement = $pdo->prepare($query);
 		//bind the member variables to the place holders in the template
-		$formattedDate = $this->profileDate->format("Y-m-d H:i:s.u");
-		$parameters = ["profileEmail" => $this->profileEmail, "profileDate" => $formattedDate];
+		$formattedDate = $this->profileDate->format("Y-m-d H:i:s.u"); //todo you wont need to use validate date for this class
+		$parameters = ["profileEmail" => $this->profileEmail, "profileDate" => $formattedDate]; //todo the parameters for this should be more like: "profileId" => this->profileId, "profileEmail" => this->profileEmail, "profileHash" => this->profileHash, "profileSalt" -> this->profileSalt
 		$statement->execute($parameters);
 		//update the null profileId with what mySQL just gave us
 		$this->profileId = intval($pdo->lastInsertId());
@@ -217,6 +218,86 @@ class Profile implements \JsonSerializable {
 	$query = "UPDATE profile SET profileEmail = :profileEmail, profileDate = :profileDate WHERE profileId = :profileId";
 	$statement = $pdo->prepare($query);
 	//bind the member bariables to the place holders in the template
-		$parameters = {"profileId" => $this->profileId}
+		$parameters = {"profileId" => $this->profileId} //todo this uses [] not {}. you will also want to add profileEmail, profileHash, and profileSalt to the parameters
+		//todo don't forget to execute your parameters
 }
+
+/* todo you now need to make methods to access the profile in different ways. I suggest creating a method called getProfileByProfileId and a method called getProfileByProfileEmail.
+	todo use the following example
+
+/**
+	 * gets a Tweet by tweetId
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param int $tweetId tweet id to search for
+	 * @return Tweet|null Tweet found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+
+/*public static function getTweetByTweetId(\PDO $pdo, int $tweetId) : ?Tweet {
+		// sanitize the tweetId before searching
+		if($tweetId <= 0) {
+			throw(new \PDOException("tweet id is not positive"));
+		}
+		// create query template
+		$query = "SELECT tweetId, tweetProfileId, tweetContent, tweetDate FROM tweet WHERE tweetId = :tweetId";
+		$statement = $pdo->prepare($query);
+		// bind the tweet id to the place holder in the template
+		$parameters = ["tweetId" => $tweetId];
+		$statement->execute($parameters);
+		// grab the tweet from mySQL
+		try {
+			$tweet = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$tweet = new Tweet($row["tweetId"], $row["tweetProfileId"], $row["tweetContent"], $row["tweetDate"]);
+			}
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return($tweet);
+	}*/
+
+//todo following this you will need to make a getAllProfiles method - see the following for an example:
+
+	/**
+	 * gets all Tweets
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @return \SplFixedArray SplFixedArray of Tweets found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
+	/*public static function getAllTweets(\PDO $pdo) : \SplFixedArray {
+		// create query template
+		$query = "SELECT tweetId, tweetProfileId, tweetContent, tweetDate FROM tweet";
+		$statement = $pdo->prepare($query);
+		$statement->execute();
+		// build an array of tweets
+		$tweets = new \SplFixedArray($statement->rowCount());
+		$statement->setFetchMode(\PDO::FETCH_ASSOC);
+		while(($row = $statement->fetch()) !== false) {
+			try {
+				$tweet = new Tweet($row["tweetId"], $row["tweetProfileId"], $row["tweetContent"], $row["tweetDate"]);
+				$tweets[$tweets->key()] = $tweet;
+				$tweets->next();
+			} catch(\Exception $exception) {
+				// if the row couldn't be converted, rethrow it
+				throw(new \PDOException($exception->getMessage(), 0, $exception));
+			}
+		}
+		return ($tweets);
+	}*/
+
+	//todo you now need to implement JsonSerialize() you will want it to look something like the following:
+
+	/*public function jsonSerialize() {
+		$fields = get_object_vars($this);
+		unset($fields["profilePasswordHash"]);
+		unset($fields["profileSalt"]);
+		return($fields);
+	}*/
 }
