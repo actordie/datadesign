@@ -211,7 +211,7 @@ public static function getProfileByProfileId(\PDO $pdo, int $profileId) : ?Profi
 			throw(new \PDOException("profile id is not positive"));
 		}
 		// create query template
-		$query = "SELECT profileId, profileEmail, FROM profile WHERE profileId = :profileId";
+		$query = "SELECT profileId, profileEmail FROM profile WHERE profileId = :profileId";
 		$statement = $pdo->prepare($query);
 		// bind the profile id to the place holder in the template
 		$parameters = ["profileId" => $profileId];
