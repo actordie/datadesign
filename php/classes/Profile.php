@@ -53,7 +53,7 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	 * @throws \Exception if some other exception occurs
 	 * @Documentation https://php.net/manual/en/language.oop5.decon.php
 	 **/
-	public function __construct(?int $newProfileId, string $newprofileEmail, string $newProfileHash, string $newProfileSalt) {
+	public function __construct(?int $newProfileId, string $newProfileEmail, string $newProfileHash, string $newProfileSalt) {
 		try {
 			$this->setProfileId($newProfileId);
 			$this->setProfileEmail($newProfileEmail);
@@ -128,7 +128,68 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 		//store the profile email
 		$this->profileEmail = $newProfileEmail;
 	}
+	/**
+	 * accessor method for profile hash
+	 *
+	 * @return string value of profile hash
+	 */
+	public function getProfileHash(): string {
+		return ($this->profileHash);
+	}
 
+	/**
+	 * mutator method for profile hash
+	 *
+	 * @param string $newProfilehash new value of tweet content
+	 * @throws \InvalidArgumentException if $newProfileEmail is not a string or insecure
+	 * @throws \RangeException if $newProfileEmail is > 32 characters
+	 * @trows \TypeError if $newProfileEmail is not a string
+	 */
+	public function setProfileHash(string $newProfileHash): void {
+		//verify the content is secure
+		$newProfileHash = trim($newProfileHash);
+		$newProfileHash = filter_var($newProfileHash, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($newProfileHash) === true) {
+			throw(new \InvalidArgumentException("profile email is empty or insecure"));
+		}
+		//verify the profile hash will fit in the database
+		if(strlen($newProfileHash) > 32) {
+			throw(new \RangeException("profile hash too large"));
+		}
+		//store the profile email
+		$this->profileHash = $newProfileHash;
+	}
+	/**
+	 * accessor method for profile salt
+	 *
+	 * @return string value of profile salt
+	 */
+	public function getProfileSalt(): string {
+		return ($this->profileSalt				);
+	}
+
+	/**
+	 * mutator method for profile salt
+	 *
+	 * @param string $newProfilesalt new value of profile email
+	 * @throws \InvalidArgumentException if $newProfileEmail is not a string or insecure
+	 * @throws \RangeException if $newProfileEmail is > 32 characters
+	 * @trows \TypeError if $newProfileEmail is not a string
+	 */
+	public function setProfileSalt(string $newProfileSalt): void {
+		//verify the content is secure
+		$newProfileSalt = trim($newProfileSalt);
+		$newProfileSalt = filter_var($newProfileSalt, FILTER_SANITIZE_STRING, FILTER_FLAG_NO_ENCODE_QUOTES);
+		if(empty($newProfileSalt) === true) {
+			throw(new \InvalidArgumentException("profile email is empty or insecure"));
+		}
+		//verify the profile hash will fit in the database
+		if(strlen($newProfileSalt) > 32) {
+			throw(new \RangeException("profile salt too large"));
+		}
+		//store the profile salt
+		$this->profileSalt = $newProfileSalt;
+	}
 	/**
 	 * inserts this Profile into mySQL
 	 *
@@ -146,7 +207,7 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 		$statement = $pdo->prepare($query);
 		//bind the member variables to the place holders in the template
 
-		$parameters = ["profileEmail" => $this->profileEmail, "profileId" => $this->profileId, "profileSalt" => $this->profileSalt, "profileHash" => $this->profileHash], //todo the parameters for this should be more like: "profileId" => this->profileId, "profileEmail" => this->profileEmail, "profileHash" => this->profileHash, "profileSalt" -> this->profileSalt
+		$parameters = ["profileEmail" => $this->profileEmail, "profileId" => $this->profileId, "profileSalt" => $this->profileSalt, "profileHash" => $this->profileHash]; //todo the parameters for this should be more like: "profileId" => this->profileId, "profileEmail" => this->profileEmail, "profileHash" => this->profileHash, "profileSalt" -> this->profileSalt
 		$statement->execute($parameters);
 		//update the null profileId with what mySQL just gave us
 		$this->profileId = intval($pdo->lastInsertId());
