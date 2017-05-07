@@ -43,7 +43,7 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	 * salt
 	 */
 
-	private $profileSalt
+	private $profileSalt;
 
 	/**
 	 * constructor for this Tweet
@@ -192,7 +192,7 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	$query = "UPDATE profile SET profileEmail = :profileEmail, profileDate = :profileDate WHERE profileId = :profileId";
 	$statement = $pdo->prepare($query);
 	//bind the member bariables to the place holders in the template
-		$parameters = ["profileId" => $this->profileId, "profileEmail"=> $this->profileEmail, "profileHash" => $this->profileHash, "profileSalt" => $this->profileSalt] //todo this uses [] not {}. you will also want to add profileEmail, profileHash, and profileSalt to the parameters
+		$parameters = ["profileId" => $this->profileId, "profileEmail"=> $this->profileEmail, "profileHash" => $this->profileHash, "profileSalt" => $this->profileSalt]; //todo this uses [] not {}. you will also want to add profileEmail, profileHash, and profileSalt to the parameters
 		//todo don't forget to execute your parameters
 }
 
@@ -209,45 +209,45 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	 * @throws \TypeError when variables are not the correct data type
 	 **/
 
-/*public static function getProfileByProfileId(\PDO $pdo, int $tprofileId) : ?Profile {
+public static function getProfileByProfileId(\PDO $pdo, int $tprofileId) : ?Profile {
 		// sanitize the profileId before searching
 		if($profileId <= 0) {
 			throw(new \PDOException("profile id is not positive"));
 		}
 		// create query template
-		$query = "SELECT profileId, profileEmail, profileDate FROM tweet WHERE profileId = :profileId";
+		$query = "SELECT profileId, profileEmail, profileDate FROM profile WHERE profileId = :profileId";
 		$statement = $pdo->prepare($query);
 		// bind the profile id to the place holder in the template
-		$parameters = ["tweetId" => $tweetId];
+		$parameters = ["profileId" => $profileId];
 		$statement->execute($parameters);
 		// grab the tweet from mySQL
 		try {
-			$tweet = null;
+			$tprofile = null;
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
-				$tweet = new Tweet($row["tweetId"], $row["tweetProfileId"], $row["tweetContent"], $row["tweetDate"]);
+				$profile = new Profile($row["profileId"], $row["profileEmail"], $row["profileDate"]);
 			}
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
 			throw(new \PDOException($exception->getMessage(), 0, $exception));
 		}
-		return($tweet);
-	}*/
+		return($profile);
+	}
 
 //todo following this you will need to make a getAllProfiles method - see the following for an example:
 
 	/**
-	 * gets all Tweets
+	 * gets all Profile
 	 *
 	 * @param \PDO $pdo PDO connection object
 	 * @return \SplFixedArray SplFixedArray of Tweets found or null if not found
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when variables are not the correct data type
 	 **/
-	/*public static function getAllTweets(\PDO $pdo) : \SplFixedArray {
+	public static function getAllProfile(\PDO $pdo) : \SplFixedArray {
 		// create query template
-		$query = "SELECT tweetId, tweetProfileId, tweetContent, tweetDate FROM tweet";
+		$query = "SELECT profileId, profileEmail, profileDate FROM profile";
 		$statement = $pdo->prepare($query);
 		$statement->execute();
 		// build an array of tweets
@@ -255,23 +255,23 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$tweet = new Tweet($row["tweetId"], $row["tweetProfileId"], $row["tweetContent"], $row["tweetDate"]);
-				$tweets[$tweets->key()] = $tweet;
-				$tweets->next();
+				$tweet = new Profile($row["profileId"], $row["profileEmail"], $row["profileDate"]);
+				$profiles[$profiles->key()] = $profiles;
+				$profiles->next();
 			} catch(\Exception $exception) {
 				// if the row couldn't be converted, rethrow it
 				throw(new \PDOException($exception->getMessage(), 0, $exception));
 			}
 		}
 		return ($tweets);
-	}*/
+	}
 
 	//todo you now need to implement JsonSerialize() you will want it to look something like the following:
 
-	/*public function jsonSerialize() {
+	public function jsonSerialize() {
 		$fields = get_object_vars($this);
 		unset($fields["profilePasswordHash"]);
 		unset($fields["profileSalt"]);
 		return($fields);
-	}*/
+	}
 }
