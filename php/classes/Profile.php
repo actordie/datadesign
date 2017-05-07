@@ -196,7 +196,7 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	todo use the following example
 
 /**
-	 * gets a Profile by tweetId
+	 * gets a Profile by profileId
 	 *
 	 * @param \PDO $pdo PDO connection object
 	 * @param int $profileId profile id to search for
@@ -205,24 +205,24 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	 * @throws \TypeError when variables are not the correct data type
 	 **/
 
-public static function getProfileByProfileId(\PDO $pdo, int $tprofileId) : ?Profile {
+public static function getProfileByProfileId(\PDO $pdo, int $profileId) : ?Profile {
 		// sanitize the profileId before searching
 		if($profileId <= 0) {
 			throw(new \PDOException("profile id is not positive"));
 		}
 		// create query template
-		$query = "SELECT profileId, profileEmail, profileDate FROM profile WHERE profileId = :profileId";
+		$query = "SELECT profileId, profileEmail, profileHash, profileSalt FROM profile WHERE profileId = :profileId";
 		$statement = $pdo->prepare($query);
 		// bind the profile id to the place holder in the template
 		$parameters = ["profileId" => $profileId];
 		$statement->execute($parameters);
 		// grab the tweet from mySQL
 		try {
-			$tprofile = null;
+			$profile = null;
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
 			$row = $statement->fetch();
 			if($row !== false) {
-				$profile = new Profile($row["profileId"], $row["profileEmail"], $row["profileDate"]);
+				$profile = new Profile($row["profileId"], $row["profileEmail"], $row["profileHash"], $row["profileSalt"]);
 			}
 		} catch(\Exception $exception) {
 			// if the row couldn't be converted, rethrow it
@@ -241,9 +241,9 @@ public static function getProfileByProfileId(\PDO $pdo, int $tprofileId) : ?Prof
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when variables are not the correct data type
 	 **/
-	public static function getAllProfile(\PDO $pdo) : \SplFixedArray {
+	public static function getAllProfiles(\PDO $pdo) : \SplFixedArray {
 		// create query template
-		$query = "SELECT profileId, profileEmail, profileDate FROM profile";
+		$query = "SELECT profileId, profileEmail, FROM profile";
 		$statement = $pdo->prepare($query);
 		$statement->execute();
 		// build an array of tweets
@@ -251,7 +251,7 @@ public static function getProfileByProfileId(\PDO $pdo, int $tprofileId) : ?Prof
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
-				$tweet = new Profile($row["profileId"], $row["profileEmail"], $row["profileDate"]);
+				$tweet = new Profile($row["profileId"], $row["profileEmail"], $row["profileHash"], $row["profileSalt"]);
 				$profiles[$profiles->key()] = $profiles;
 				$profiles->next();
 			} catch(\Exception $exception) {
