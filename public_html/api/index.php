@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__DIR__, 3) . "/vendor/autoload.php");
+require_once(dirname(__DIR__, 2) . "/vendor/autoload.php");
 require_once(dirname(__DIR__, 3) . "/php/classes/autoload.php");
 require_once(dirname(__DIR__, 3) . "/php/lib/xsrf.php");
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
@@ -72,13 +72,7 @@ try {
 			if(empty($requestObject->profileEmail) === true) {
 				throw(new \InvalidArgumentException ("No profile email present", 405));
 			}
-			//profile phone # | if null use the profile phone that is in the database
-			if(empty($requestObject->profilePhone) === true) {
-				$requestObject->ProfilePhone = $profile->getProfilePhone();
-			}
-			$profile->setProfileAtHandle($requestObject->profileAtHandle);
 			$profile->setProfileEmail($requestObject->profileEmail);
-			$profile->setProfilePhone($requestObject->profilePhone);
 			$profile->update($pdo);
 			// update reply
 			$reply->message = "Profile information updated";
