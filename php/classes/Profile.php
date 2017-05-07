@@ -39,6 +39,11 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	 */
 
 	private $profileHash;
+	/**
+	 * salt
+	 */
+
+	private $profileSalt
 
 	/**
 	 * constructor for this Tweet
@@ -56,6 +61,7 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	public function __construct(?int $newProfileId, string $newprofileEmail, string $newProfileHash, string $newProfileSalt) {
 		try {
 			$this->setProfileId($newProfileId);
+			$this->setProfileEmail($newProfileEmail);
 			//todo add method for email here too
 			$this->setProfileHash($newProfileHash); //todo you have not created this method yet
 			$this->profileSalt($newProfileSalt); //todo you have not created this method yet
@@ -129,38 +135,6 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	}
 
 	/**
-	 * accessor method for tweet date
-	 *
-	 * @return \DateTime value of profile date
-	 */
-	public function getProfileDate(): \DateTime { //todo date is not a part of this entity, delete this
-		return ($this->profileDate);
-	}
-
-	/**
-	 * mutator method for profile date
-	 *
-	 * @param \DateTime|string|null $newProfileDate profile date as a DateTime object or tring (or null to load the current time)
-	 * @throws \InvalidArgumentException if $newProfileDate is not a valide object or string
-	 * @throws \RangeException if $newPRofileDate is a date that does not exist
-	 */
-	public function setProfileDate($newProfileDate = null): void { //todo date is not a part of this entity, delete this
-		//base case: if the date is null use the current date and time
-		if($newProfileDate === null) {
-			$this->profileDate = new \DateTime();
-			return;
-		}
-		//store the like date using the ValidateDate trait
-		try {
-			$newProfileDate = self::validateDateTime($newProfileDate);
-		} catch(\InvalidArgumentException | \rangeException $exception) {
-			$exceptionType = get_class($exception);
-			throw(new$exceptionType($exception->getMessage(), 0, $exception));
-		}
-		$this->profileDate = $newProfileDate;
-	}
-
-	/**
 	 * inserts this Profile into mySQL
 	 *
 	 * @param \PDO $pdo PDO connection object
@@ -173,11 +147,11 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 			throw(new \PDOException("not a new profile"));
 		}
 		//create a query template
-		$query = "INSERT INTO profile(profileEmail, profileDate) VALUES(:profileEmail, :profileDate) "; //todo you do not need to insert a date here because date is not a part of the profile entity. you will need to insert your profileId, profileEmail, profileHash, and profileSalt
+		$query = "INSERT INTO profile(profileEmail, profileId, profileEmail, profileHash, profileSalt) VALUES(:profileEmail, :profileDate) "; //todo you do not need to insert a date here because date is not a part of the profile entity. you will need to insert your profileId, profileEmail, profileHash, and profileSalt
 		$statement = $pdo->prepare($query);
 		//bind the member variables to the place holders in the template
-		$formattedDate = $this->profileDate->format("Y-m-d H:i:s.u"); //todo you wont need to use validate date for this class
-		$parameters = ["profileEmail" => $this->profileEmail, "profileDate" => $formattedDate]; //todo the parameters for this should be more like: "profileId" => this->profileId, "profileEmail" => this->profileEmail, "profileHash" => this->profileHash, "profileSalt" -> this->profileSalt
+
+		$parameters = ["profileEmail" => $this->profileEmail, "profileId" => this->profileId; "profileSalt" -> this->profileSalt; "profileHash" => this->$this->profileHash]; //todo the parameters for this should be more like: "profileId" => this->profileId, "profileEmail" => this->profileEmail, "profileHash" => this->profileHash, "profileSalt" -> this->profileSalt
 		$statement->execute($parameters);
 		//update the null profileId with what mySQL just gave us
 		$this->profileId = intval($pdo->lastInsertId());
@@ -218,7 +192,7 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	$query = "UPDATE profile SET profileEmail = :profileEmail, profileDate = :profileDate WHERE profileId = :profileId";
 	$statement = $pdo->prepare($query);
 	//bind the member bariables to the place holders in the template
-		$parameters = {"profileId" => $this->profileId} //todo this uses [] not {}. you will also want to add profileEmail, profileHash, and profileSalt to the parameters
+		$parameters = ["profileId" => $this->profileId, "profileEmail"=> $this->profileEmail, "profileHash" => $this->profileHash, "profileSalt" => $this->profileSalt] //todo this uses [] not {}. you will also want to add profileEmail, profileHash, and profileSalt to the parameters
 		//todo don't forget to execute your parameters
 }
 
@@ -226,24 +200,24 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	todo use the following example
 
 /**
-	 * gets a Tweet by tweetId
+	 * gets a Profile by tweetId
 	 *
 	 * @param \PDO $pdo PDO connection object
-	 * @param int $tweetId tweet id to search for
-	 * @return Tweet|null Tweet found or null if not found
+	 * @param int $profileId profile id to search for
+	 * @return Profile|null Profile found or null if not found
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when variables are not the correct data type
 	 **/
 
-/*public static function getTweetByTweetId(\PDO $pdo, int $tweetId) : ?Tweet {
-		// sanitize the tweetId before searching
-		if($tweetId <= 0) {
-			throw(new \PDOException("tweet id is not positive"));
+/*public static function getProfileByProfileId(\PDO $pdo, int $tprofileId) : ?Profile {
+		// sanitize the profileId before searching
+		if($profileId <= 0) {
+			throw(new \PDOException("profile id is not positive"));
 		}
 		// create query template
-		$query = "SELECT tweetId, tweetProfileId, tweetContent, tweetDate FROM tweet WHERE tweetId = :tweetId";
+		$query = "SELECT profileId, profileEmail, profileDate FROM tweet WHERE profileId = :profileId";
 		$statement = $pdo->prepare($query);
-		// bind the tweet id to the place holder in the template
+		// bind the profile id to the place holder in the template
 		$parameters = ["tweetId" => $tweetId];
 		$statement->execute($parameters);
 		// grab the tweet from mySQL
