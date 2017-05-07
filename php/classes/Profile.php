@@ -30,11 +30,6 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	private $profileEmail;
 
 	/**
-	 * salt
-	 */
-
-	private $profileDate;
-	/**
 	 * hash
 	 */
 
@@ -64,7 +59,7 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 			$this->setProfileEmail($newProfileEmail);
 			//todo add method for email here too
 			$this->setProfileHash($newProfileHash); //todo you have not created this method yet
-			$this->profileSalt($newProfileSalt); //todo you have not created this method yet
+			$this->setProfileSalt($newProfileSalt); //todo you have not created this method yet
 		} //determine what exception type was thrown
 		catch(\InvalidArgumentException | \RangeException | \Exception | \TypeError $exception) {
 			$exceptionType = get_class($exception);
@@ -147,11 +142,11 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 			throw(new \PDOException("not a new profile"));
 		}
 		//create a query template
-		$query = "INSERT INTO profile(profileEmail, profileId, profileEmail, profileHash, profileSalt) VALUES(:profileEmail, :profileDate) "; //todo you do not need to insert a date here because date is not a part of the profile entity. you will need to insert your profileId, profileEmail, profileHash, and profileSalt
+		$query = "INSERT INTO profile(profileId, profileEmail, profileHash, profileSalt) VALUES( :profileId, :profileEmail, :profileHash, :profileSalt) "; //todo you do not need to insert a date here because date is not a part of the profile entity. you will need to insert your profileId, profileEmail, profileHash, and profileSalt
 		$statement = $pdo->prepare($query);
 		//bind the member variables to the place holders in the template
 
-		$parameters = ["profileEmail" => $this->profileEmail, "profileId" => this->profileId; "profileSalt" -> this->profileSalt; "profileHash" => this->$this->profileHash]; //todo the parameters for this should be more like: "profileId" => this->profileId, "profileEmail" => this->profileEmail, "profileHash" => this->profileHash, "profileSalt" -> this->profileSalt
+		$parameters = ["profileEmail" => $this->profileEmail, "profileId" => $this->profileId, "profileSalt" => $this->profileSalt, "profileHash" => $this->profileHash], //todo the parameters for this should be more like: "profileId" => this->profileId, "profileEmail" => this->profileEmail, "profileHash" => this->profileHash, "profileSalt" -> this->profileSalt
 		$statement->execute($parameters);
 		//update the null profileId with what mySQL just gave us
 		$this->profileId = intval($pdo->lastInsertId());
