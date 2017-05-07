@@ -184,10 +184,11 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 			throw(new \PDOException("unable to update a tweet that does not exist"));
 	}
 	//create a query template
-	$query = "UPDATE profile SET profileEmail = :profileEmail, profileDate = :profileDate WHERE profileId = :profileId";
+	$query = "UPDATE profile SET profileEmail = :profileEmail, profileHash = :profileHash, profileSalt = :profileSalt WHERE profileId = :profileId";
 	$statement = $pdo->prepare($query);
 	//bind the member bariables to the place holders in the template
 		$parameters = ["profileId" => $this->profileId, "profileEmail"=> $this->profileEmail, "profileHash" => $this->profileHash, "profileSalt" => $this->profileSalt]; //todo this uses [] not {}. you will also want to add profileEmail, profileHash, and profileSalt to the parameters
+		$statement->execute($parameters);
 		//todo don't forget to execute your parameters
 }
 
