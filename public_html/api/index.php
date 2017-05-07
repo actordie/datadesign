@@ -7,9 +7,9 @@ use Edu\Cnm\DataDesign\ {
 	Profile
 };
 /**
- * API for Tweet
+ * API for Profile
  *
- * @author Gkephart
+ * @author Sabastian Jackson
  * @version 1.0
  */
 //verify the session, if it is not active start it
