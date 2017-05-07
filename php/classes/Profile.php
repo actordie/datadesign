@@ -9,7 +9,7 @@ require_once("autoload.php");
 /**
  * * Small Cross Section of a Twitter like Message
  *
- * This Tweet can be considered a small example of what services like Twitter store when messages are sent and
+ * This Profile can be considered a small example of what services like Twitter store when messages are sent and
  * received using Twitter. This can easily be extended to emulate more features of Twitter.
  *
  * @author Sabastian Jackson <sjackson37@cnm.edu>
@@ -41,12 +41,11 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	private $profileSalt;
 
 	/**
-	 * constructor for this Tweet
+	 * constructor for this Profile
 	 *
 	 * @param int|null $newProfileId id of this Profile or null if a new Profile
 	 * @param int $newProfileEmail id of the Email that sent this Profile
-	 * @param string $newTweetContent string containing actual tweet data
-	 * @param \DateTime|string|null $newTweetDate date and time Tweet was sent or null if set to current date and time
+	 * @param string $newProfileEmaik string containing actual profile data
 	 * @throws \InvalidArgumentException if data types are not valid
 	 * @throws \RangeException if data values are out of bounds (e.g., strings too long, negative integers)
 	 * @throws \TypeError if data types violate type hints
@@ -109,7 +108,7 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	/**
 	 * mutator method for profile email
 	 *
-	 * @param string $newProfileEmail new value of tweet content
+	 * @param string $newProfileEmail new value of profile content
 	 * @throws \InvalidArgumentException if $newProfileEmail is not a string or insecure
 	 * @throws \RangeException if $newProfileEmail is > 32 characters
 	 * @trows \TypeError if $newProfileEmail is not a string
@@ -245,7 +244,7 @@ class Profile implements \JsonSerializable { //todo you have to implement JsonSe
 	public function update(\PDO $pdo) : void {
 		//enforce the profileId is not null (i.e., don't update a profile that hasn't been inserted)
 	if($this->profileId === null) {
-			throw(new \PDOException("unable to update a tweet that does not exist"));
+			throw(new \PDOException("unable to update a profile that does not exist"));
 	}
 	//create a query template
 	$query = "UPDATE profile SET profileEmail = :profileEmail, profileHash = :profileHash, profileSalt = :profileSalt WHERE profileId = :profileId";
@@ -280,7 +279,7 @@ public static function getProfileByProfileId(\PDO $pdo, int $profileId) : ?Profi
 		// bind the profile id to the place holder in the template
 		$parameters = ["profileId" => $profileId];
 		$statement->execute($parameters);
-		// grab the tweet from mySQL
+		// grab the profile from mySQL
 		try {
 			$profile = null;
 			$statement->setFetchMode(\PDO::FETCH_ASSOC);
@@ -335,7 +334,7 @@ public static function getProfileByProfileId(\PDO $pdo, int $profileId) : ?Profi
 	 * gets all Profile
 	 *
 	 * @param \PDO $pdo PDO connection object
-	 * @return \SplFixedArray SplFixedArray of Tweets found or null if not found
+	 * @return \SplFixedArray SplFixedArray of Profiles found or null if not found
 	 * @throws \PDOException when mySQL related errors occur
 	 * @throws \TypeError when variables are not the correct data type
 	 **/
@@ -344,8 +343,8 @@ public static function getProfileByProfileId(\PDO $pdo, int $profileId) : ?Profi
 		$query = "SELECT profileId, profileEmail FROM profile";
 		$statement = $pdo->prepare($query);
 		$statement->execute();
-		// build an array of tweets
-		$tweets = new \SplFixedArray($statement->rowCount());
+		// build an array of profile
+		$profiles = new \SplFixedArray($statement->rowCount());
 		$statement->setFetchMode(\PDO::FETCH_ASSOC);
 		while(($row = $statement->fetch()) !== false) {
 			try {
