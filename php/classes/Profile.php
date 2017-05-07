@@ -294,7 +294,41 @@ public static function getProfileByProfileId(\PDO $pdo, int $profileId) : ?Profi
 		}
 		return($profile);
 	}
+	/**
+	 * gets a Profile by profileEmail
+	 *
+	 * @param \PDO $pdo PDO connection object
+	 * @param int $profileEmail profile email to search for
+	 * @return Profile|null Profile found or null if not found
+	 * @throws \PDOException when mySQL related errors occur
+	 * @throws \TypeError when variables are not the correct data type
+	 **/
 
+	public static function getProfileByProfileEmail(\PDO $pdo, string $profileEmail) : ?Profile {
+		// sanitize the profileId before searching
+		if($profileEmail === null) {
+			throw(new \PDOException("profile email does not exist"));
+		}
+		// create query template
+		$query = "SELECT profileId, profileEmail FROM profile WHERE profileEmail = :profileEmail";
+		$statement = $pdo->prepare($query);
+		// bind the profile email to the place holder in the template
+		$parameters = ["profileEmail" => $profileEmail];
+		$statement->execute($parameters);
+		// grab the profile from mySQL
+		try {
+			$email = null;
+			$statement->setFetchMode(\PDO::FETCH_ASSOC);
+			$row = $statement->fetch();
+			if($row !== false) {
+				$profile = new Profile($row["profileId"], $row["profileEmail"], $row["profileHash"], $row["profileSalt"]);
+			}
+		} catch(\Exception $exception) {
+			// if the row couldn't be converted, rethrow it
+			throw(new \PDOException($exception->getMessage(), 0, $exception));
+		}
+		return($profile);
+	}
 //todo following this you will need to make a getAllProfiles method - see the following for an example:
 
 	/**

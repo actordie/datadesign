@@ -3,7 +3,7 @@ require_once(dirname(__DIR__, 3) . "/vendor/autoload.php");
 require_once(dirname(__DIR__, 3) . "/php/classes/autoload.php");
 require_once(dirname(__DIR__, 3) . "/php/lib/xsrf.php");
 require_once("/etc/apache2/capstone-mysql/encrypted-config.php");
-use Edu\Cnm\DataDesign\ {
+use Edu\Cnm\sjackson37\ {
 	Profile
 };
 /**
@@ -22,7 +22,7 @@ $reply->status = 200;
 $reply->data = null;
 try {
 	//grab the mySQL connection
-	$pdo = connectToEncryptedMySQL("/etc/apache2/capstone-mysql/ddctwitter.ini");
+	$pdo = connectToEncryptedMySQL("/etc/apache2/capstone-mysql/ddctwitter.ini"); //what ini am i supposed to use
 	//determine which HTTP method was used
 	$method = array_key_exists("HTTP_X_HTTP_METHOD", $_SERVER) ? $_SERVER["HTTP_X_HTTP_METHOD"] : $_SERVER["REQUEST_METHOD"];
 	// sanitize input
@@ -39,11 +39,6 @@ try {
 		//gets a post by content
 		if(empty($id) === false) {
 			$profile = Profile::getProfileByProfileId($pdo, $id);
-			if($profile !== null) {
-				$reply->data = $profile;
-			}
-		} else if(empty($profileAtHandle) === false) {
-			$profile = Profile::getProfileByProfileAtHandle($pdo, $profileAtHandle);
 			if($profile !== null) {
 				$reply->data = $profile;
 			}
